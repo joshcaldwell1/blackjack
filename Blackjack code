@@ -1,0 +1,187 @@
+##
+## *************************************************** 
+## Joshua Caldwell
+## University of Waterloo
+## Term 2A - Fall 2020
+## Blackjack Game
+## ***************************************************
+## 
+
+import random
+
+L = list(range(1,53,1))
+
+## Global Variables
+player_total = 0
+dealer_total = 0
+
+def update_player_total(n):
+    global player_total
+    player_total += n
+    
+def update_dealer_total(x):
+    global dealer_total
+    dealer_total += x
+
+## Produce Card Functions
+
+def find_n(): ## Finds a random card
+    return L.pop(random.randrange(0, len(L)))
+
+def suit(number): ## Determines suit of card
+    if 0< number < 14:
+        return "Clubs"
+    if 14 <= number < 27:
+        return "Diamonds"
+    if 27 <= number < 40:
+        return "Hearts"
+    else:
+        return "Spades"
+    
+def rank(n): ## Determines rank of card
+    n = n % 13
+    if n == 1:
+        return "Ace"
+    if n == 2:
+        return "Two"
+    if n == 3:
+        return "Three"
+    if n == 4:
+        return "Four"
+    if n == 5:
+        return "Five"
+    if n == 6:
+        return "Six"
+    if n == 7:
+        return "Seven"
+    if n == 8:
+        return "Eight"
+    if n == 9:
+        return "Nine" 
+    if n == 10:
+        return "Ten"
+    if n == 11:
+        return "Jack"
+    if n == 12:
+        return "Queen"
+    if n == 0:
+        return "King" 
+    
+def card_value(card): ## Determines value of card
+    n = card % 13
+    if n == 1:
+        if dealer_total < 11:
+            n = 11
+            return n
+        else:
+            n = 1
+            return n
+        return int(m)
+    if 1 < n <= 10:
+        return n
+    else:
+        return 10   
+    
+def produce_card(): ## Produces a card
+    n = find_n()
+    value = card_value(n)
+    dealer_total = update_dealer_total(value)
+    read_card = "{0} of {1}"
+    print(read_card.format(rank(n), suit(n)))
+    return ""
+
+def deal():
+    return produce_card()
+
+def player_card_value(card):
+    n = card % 13
+    if n == 1:
+        m = input("1 or 11? : ")
+        return int(m)
+    if 1 < n <= 10:
+        return n
+    else:
+        return 10      
+
+def produce_player_card():
+    n = find_n()
+    value = player_card_value(n)
+    player_total = update_player_total(value)
+    read_card = "{0} of {1}"
+    print(read_card.format(rank(n), suit(n)))
+    return ""    
+
+def deal_to_player():
+    return produce_player_card()
+
+def first_round():
+    print("Dealer:")
+    dealer = deal()
+    print("???")
+    print("Dealer Total: " + str(dealer_total))
+    print() 
+    print("Player:")
+    player1 = deal_to_player()
+    player2 = deal_to_player()
+    print("Player Total:" + str(player_total))
+    return dealer + player1 + player2   
+
+def play_blackjack():
+    ## First Call
+    print(first_round())
+    
+    if player_total == 21: ## Player got a Blackjack
+        print("Dealer Card: ")
+        print(deal())
+        if dealer_total > 21: ## Check that dealer did not get a blackjack
+            print("Blackjack!")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)
+            return
+        if dealer_total == player_total: ## If dealer got a blackjack its a push
+            print("Push")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)                        
+            return
+        if dealer_total < player_total: ## Dealer has less than 21
+            print("Blackjack!")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)           
+            return        
+    move = input("Hit or Stand? : ")
+    while move == "Hit":
+        print()
+        print("Next Card: ")
+        print(deal_to_player())
+        print("Player Total:" + str(player_total))
+        if player_total > 21:
+            print("Bust, House Wins.")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)            
+            return
+        move = input("Hit or Stand? : ")    
+    if move == "Stand":
+        while dealer_total < 17:
+            print("Dealer Card: ")
+            print(deal())
+        if dealer_total > 21:
+            print("Dealer Busts, You Win!")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)
+            return
+        if dealer_total > player_total:
+            print("House Wins.")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)             
+            return
+        if dealer_total == player_total:
+            print("Push")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)            
+            return
+        if dealer_total < player_total:
+            print("You Win!")
+            update_player_total(player_total * -1)
+            update_dealer_total(dealer_total * -1)
+            return
+
